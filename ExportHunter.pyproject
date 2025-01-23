@@ -1,0 +1,12 @@
+{
+    "files": [
+        "ExportHunter.py",
+        "ui/apkCreate.ui",
+        "ui/addExtrasDialog.ui",
+        "ui/configureBundle.ui",
+        "ui/form.ui",
+        "helper/globalVariables.py",
+        "helper/JavaHighlighter.py",
+        "helper/baseAPKCode.zip"
+    ]
+}
