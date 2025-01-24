@@ -10,12 +10,15 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton
 from PySide6.QtCore import Qt
 import helper.globalVariables as globalVariables
 from helper.JavaHighlighter import JavaHighlighter
+from helper.javaCodeAnalyzer import javaCodeAnalyzer
 from ui.ui_form import Ui_MainWindow
 from ui.ui_addExtrasDialog import Ui_addExtrasDialog
 from ui.ui_configureBundle import Ui_configureBundle
 from ui.ui_apkCreate import Ui_apkCreate
 import subprocess,os, xml.etree.ElementTree as ET
 from PySide6.QtWidgets import (QFileDialog, QMessageBox, QDialog, QTableWidgetItem)
+
+import re
 
 
 class MainWindow(QMainWindow):
@@ -269,10 +272,13 @@ class MainWindow(QMainWindow):
         #for daster testing
         self.loadJavaClassFile("/tmp/ExportHunter_extract/sources/com/ewmglobal/ewmmobile/settings/SettingsActivity.java")
 
+        self.ui.javaCode.selectionChanged.connect(self.javaCodeSelected)
+        javaCodeAnalyzer.getListOfMethods()
 
 
-
-
+    def javaCodeSelected(self):
+        textSelected = self.ui.javaCode.textCursor().selectedText()
+        print(textSelected)
 
 
     def launchScrcpy(self):
@@ -296,6 +302,7 @@ class MainWindow(QMainWindow):
                 content = file.read()
 
             self.ui.javaCode.setText(content)
+            globalVariables.javaClassCode = content
             JavaHighlighter(self.ui.javaCode.document())
 
         except Exception as e:
@@ -356,15 +363,17 @@ class MainWindow(QMainWindow):
                 # command = ["apktool", "d", "-f", apk_path, "-o", globalVariables.tmpDecompiledApkPath ]
 
                 #use Jadx for getting java code also
-                command = ["jadx", "-d", globalVariables.tmpDecompiledApkPath , str(globalVariables.apk_path)]
+                command = ["jadx", "-d", globalVariables.tmpDecompiledApkPath , str(globalVariables.apk_path), "-q"]
 
-                result = subprocess.run(command, capture_output=True, text=True)
-                if result.returncode == 0:
+                result = subprocess.run(command, capture_output=False, text=True)
+
+                try:
                     #with APKtool
                     # globalVariables.manifest_path = "/tmp/ExportHunter_extract/AndroidManifest.xml"
 
                     #with Jadx
                     globalVariables.manifest_path = globalVariables.tmpDecompiledApkPath + "resources/AndroidManifest.xml"
+
 
                     tree = ET.parse(globalVariables.manifest_path)
                     root = tree.getroot()
@@ -377,8 +386,8 @@ class MainWindow(QMainWindow):
                             self.ui.listExported.addItem(activity.attrib.get("{http://schemas.android.com/apk/res/android}name"))
 
                     self.ui.outputText.setText("Apk Analyzed")
-                else:
-                    QMessageBox.warning(self, "Error in browseDialog", str(result.stderr))
+                except Exception as e:
+                    QMessageBox.warning(self, "Error in browseDialog", str(e))
             else:
                 QMessageBox.warning(self, "Error", "Select Valid APK")
 

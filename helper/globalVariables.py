@@ -13,6 +13,7 @@ manifest_path = ""
 tmpDecompiledApkPath = "/tmp/ExportHunter_extract/"
 tmpCompiledApkPath ="/tmp/ExportHunter_build/"
 
+javaClassCode = ""
 selectedActivity = ""
 action = ""
 data = ""

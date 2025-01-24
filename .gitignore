@@ -2,6 +2,8 @@
 .qtcreator
 .user
 .pyproject
+ExportHunter.pyproject
+ExportHunter.pyproject.user
 __pycache__
 
 
