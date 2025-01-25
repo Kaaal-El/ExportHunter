@@ -43,6 +43,9 @@ class Ui_apkCreate(object):
         self.apkLaunch = QPushButton(apkCreate)
         self.apkLaunch.setObjectName(u"apkLaunch")
         self.apkLaunch.setGeometry(QRect(610, 20, 81, 32))
+        self.refresh = QPushButton(apkCreate)
+        self.refresh.setObjectName(u"refresh")
+        self.refresh.setGeometry(QRect(610, 570, 91, 32))
 
         self.retranslateUi(apkCreate)
         self.buttonBox.accepted.connect(apkCreate.accept)
@@ -62,5 +65,6 @@ class Ui_apkCreate(object):
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial';\"><br /></p></body></html>", None))
         self.apkLaunch.setText(QCoreApplication.translate("apkCreate", u"Launch", None))
+        self.refresh.setText(QCoreApplication.translate("apkCreate", u"ReGenerate", None))
     # retranslateUi
 

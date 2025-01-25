@@ -1,11 +1,14 @@
 # This Python file uses the following encoding: utf-8
 import re
 import helper.globalVariables as globalVariables
+from helper.ExceptionHandler import ExceptionHandler
+
 # if __name__ == "__main__":
 #     pass
 class javaCodeAnalyzer():
     def __init__():
-        print(1)
+        print()
+
     def getListOfMethods():
         try:
 
@@ -17,4 +20,4 @@ class javaCodeAnalyzer():
             return(matches)
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in getListOfMethods", str(e))
+            ExceptionHandler.warning("Error in getListOfMethods", str(e))

@@ -8,15 +8,17 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton
 #     pyside6-uic form.ui -o ui_form.py, or
 #     pyside2-uic form.ui -o ui_form.py
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QTextCharFormat, QColor, QFont, QSyntaxHighlighter,QTextCursor
 import helper.globalVariables as globalVariables
 from helper.JavaHighlighter import JavaHighlighter
 from helper.javaCodeAnalyzer import javaCodeAnalyzer
+from helper.ExceptionHandler import ExceptionHandler
 from ui.ui_form import Ui_MainWindow
 from ui.ui_addExtrasDialog import Ui_addExtrasDialog
 from ui.ui_configureBundle import Ui_configureBundle
 from ui.ui_apkCreate import Ui_apkCreate
 import subprocess,os, xml.etree.ElementTree as ET
-from PySide6.QtWidgets import (QFileDialog, QMessageBox, QDialog, QTableWidgetItem)
+from PySide6.QtWidgets import (QFileDialog, QDialog, QTableWidgetItem)
 
 import re
 
@@ -77,7 +79,7 @@ class MainWindow(QMainWindow):
                     configure_button.clicked.connect(lambda checked, bundleId=ui.typeInput.text(): self.configureBundleWindow(bundleId))
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in addExtrasWindow", str(e))
+            warning("Error in addExtrasWindow", str(e))
 
     def configureBundleWindow(self,bundleId):
 
@@ -88,7 +90,7 @@ class MainWindow(QMainWindow):
                 for i in range(0,3):
                     ui.bundleTable.setItem(row_position,i,QTableWidgetItem(""))
             except Exception as e:
-                QMessageBox.warning(self, "Error in addBundleRow", str(e))
+                ExceptionHandler.warning("Error in addBundleRow", str(e))
 
 
         def removeBundleRow(self):
@@ -96,7 +98,7 @@ class MainWindow(QMainWindow):
                 selected= ui.bundleTable.selectedItems()[0].row()
                 ui.bundleTable.removeRow(selected)
             except Exception as e:
-                QMessageBox.warning(self, "Error in removeBundleRow", str(e))
+                ExceptionHandler.warning("Error in removeBundleRow", str(e))
 
         try:
             window = QDialog()
@@ -125,20 +127,20 @@ class MainWindow(QMainWindow):
                         if(type.text() != "" and key.text() != ""):
                             tempBundle[i] = {"type":ui.bundleTable.item(i,0).text(),"key":ui.bundleTable.item(i,1).text(),"value":ui.bundleTable.item(i,2).text()}
                         else:
-                            QMessageBox.warning(self, "Error", str("Type and Keys must have values"))
+                            ExceptionHandler.warning("Error", str("Type and Keys must have values"))
                             return self.configureBundleWindow(bundleId)
                     else:
-                        QMessageBox.warning(self, "Error", str("Type and Keys must have values"))
+                        ExceptionHandler.warning("Error", str("Type and Keys must have values"))
                         return self.configureBundleWindow(bundleId)
 
                 globalVariables.bundleData[bundleId]=tempBundle
 
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in configureBundleWindow", str(e))
+            ExceptionHandler.warning("Error in configureBundleWindow", str(e))
 
     def apkCodeWindow(self):
-        def apkCodeGenerate(self):
+        def apkCodeGenerate():
             try:
                 ui.apkCodeText.clear()
                 ui.apkCodeText.append("var intent = Intent()");
@@ -153,7 +155,7 @@ class MainWindow(QMainWindow):
                 if(package and activity):
                     ui.apkCodeText.append("intent.setClassName(\""+package+"\", \""+activity+"\")");
                 else:
-                    print("no package or activit")
+                    print("No package or activity selected")
                 if(action):
                     ui.apkCodeText.append("");
                     ui.apkCodeText.append("intent.action = \""+action+"\"");
@@ -167,9 +169,9 @@ class MainWindow(QMainWindow):
                 ui.apkCodeText.append("startActivity(intent)");
 
             except Exception as e:
-                QMessageBox.warning(self, "Error in apkCodeGenerate", str(e))
+                ExceptionHandler.warning("Error in apkCodeGenerate", str(e))
 
-        def apkLaunch(self):
+        def apkLaunch():
             try:
                 ui.outputText.clear()
                 package = globalVariables.packageName
@@ -218,23 +220,30 @@ class MainWindow(QMainWindow):
 
                     ui.outputText.append("[*] Launch Tasks completed")
             except Exception as e:
-                QMessageBox.warning(self, "Error in apkLaunch", str(e))
+                ExceptionHandler.warning("Error in apkLaunch", str(e))
 
         try:
-
-            self.generateExtrasCode()
 
             window = QDialog()
             ui = Ui_apkCreate()
             ui.setupUi(window)
 
-            apkCodeGenerate(self)
+            if(globalVariables.apkCode == ""):
+                self.generateExtrasCode()
+                apkCodeGenerate()
+            else:
+                ui.apkCodeText.setText(globalVariables.apkCode)
 
             ui.apkLaunch.clicked.connect(apkLaunch)
+
+            ui.refresh.clicked.connect(lambda: (setattr(globalVariables, "apkCode", ""), apkCodeGenerate()))
+
             window.exec()
 
+            globalVariables.apkCode= ui.apkCodeText.toPlainText()
+
         except Exception as e:
-            QMessageBox.warning(self, "Error in apkCodeWindow", str(e))
+            ExceptionHandler.warning("Error in apkCodeWindow", str(e))
 
 
     def __init__(self, parent=None):
@@ -273,19 +282,26 @@ class MainWindow(QMainWindow):
         self.loadJavaClassFile("/tmp/ExportHunter_extract/sources/com/ewmglobal/ewmmobile/settings/SettingsActivity.java")
 
         self.ui.javaCode.selectionChanged.connect(self.javaCodeSelected)
-        javaCodeAnalyzer.getListOfMethods()
+
+
+
+        # ExceptionHandler.warning("titlie","error")
 
 
     def javaCodeSelected(self):
-        textSelected = self.ui.javaCode.textCursor().selectedText()
-        print(textSelected)
+        try:
+            globalVariables.searchValues = self.ui.javaCode.textCursor().selectedText()
+            # print(globalVariables.searchValues)
+            JavaHighlighter(self.ui.javaCode.document())
+        except Exception as e:
+            ExceptionHandler.warning("Error in launchScrcpy", str(e))
 
 
     def launchScrcpy(self):
         try:
             subprocess.Popen("scrcpy")
         except Exception as e:
-            QMessageBox.warning(self, "Error in launchScrcpy", str(e))
+            ExceptionHandler.warning("Error in launchScrcpy", str(e))
 
     #get Java Class File Path
     def getJavaClassPath(self, className):
@@ -293,7 +309,7 @@ class MainWindow(QMainWindow):
             javaClassPath = globalVariables.tmpDecompiledApkPath +"sources/"+ className.replace(".","/") +".java"
             return(javaClassPath)
         except Exception as e:
-            QMessageBox.warning(self, "Error in getJavaClassPath", str(e))
+            ExceptionHandler.warning("Error in getJavaClassPath", str(e))
 
     #load the given java class file
     def loadJavaClassFile(self,classPath):
@@ -306,7 +322,7 @@ class MainWindow(QMainWindow):
             JavaHighlighter(self.ui.javaCode.document())
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in loadJavaClassFile", str(e))
+            ExceptionHandler.warning("Error in loadJavaClassFile", str(e))
 
 
     #get Package Name
@@ -324,10 +340,10 @@ class MainWindow(QMainWindow):
                 globalVariables.packageName = str(package_name)
                 return(str(package_name))
             else:
-                QMessageBox.warning(self, "Error", str("Manifest not found, Browse APK to analyze..."))
+                ExceptionHandler.warning("Error", str("Manifest not found, Browse APK to analyze..."))
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in getPackageValue", str(e))
+            ExceptionHandler.warning("Error in getPackageValue", str(e))
 
     #get Action Value
     def getActionValue(self):
@@ -337,7 +353,7 @@ class MainWindow(QMainWindow):
             return(str(action))
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in getActionValue", str(e))
+            ExceptionHandler.warning("Error in getActionValue", str(e))
 
     #get Data Value
     def getDataValue(self):
@@ -347,27 +363,26 @@ class MainWindow(QMainWindow):
             return(str(data))
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in getDataValue", str(e))
+            ExceptionHandler.warning( "Error in getDataValue", str(e))
 
 
     def browseDialog(self):
         try:
             #Remove this for deployment
-            globalVariables.apk_path, _filter = QFileDialog.getOpenFileName(None, "Open APK File", '/Users/bgajera/Downloads/test/1', "(*.apk)")
+            # globalVariables.apkPath, _filter = QFileDialog.getOpenFileName(None, "Open APK File", '/Users/bgajera/Downloads/test/1', "(*.apk)")
 
             #Use this while deployment
-            # apk_path, _filter = QFileDialog.getOpenFileName(None, "Open APK File", '', "(*.apk)")
+            globalVariables.apkPath, _filter = QFileDialog.getOpenFileName(None, "Open APK File", '', "(*.apk)")
             self.ui.listExported.clear()
-            if os.path.exists(globalVariables.apk_path):
+            if os.path.exists(globalVariables.apkPath):
+                try:
                 #Apktool _ Old code
-                # command = ["apktool", "d", "-f", apk_path, "-o", globalVariables.tmpDecompiledApkPath ]
+                # command = ["apktool", "d", "-f", apkPath, "-o", globalVariables.tmpDecompiledApkPath ]
 
                 #use Jadx for getting java code also
-                command = ["jadx", "-d", globalVariables.tmpDecompiledApkPath , str(globalVariables.apk_path), "-q"]
+                    command = ["jadx", "-d", globalVariables.tmpDecompiledApkPath , str(globalVariables.apkPath), "-q","--deobf"]
 
-                result = subprocess.run(command, capture_output=False, text=True)
-
-                try:
+                    result = subprocess.run(command, capture_output=False, text=True)
                     #with APKtool
                     # globalVariables.manifest_path = "/tmp/ExportHunter_extract/AndroidManifest.xml"
 
@@ -387,12 +402,12 @@ class MainWindow(QMainWindow):
 
                     self.ui.outputText.setText("Apk Analyzed")
                 except Exception as e:
-                    QMessageBox.warning(self, "Error in browseDialog", str(e))
+                    ExceptionHandler.warning("Error in browseDialog", str(e))
             else:
-                QMessageBox.warning(self, "Error", "Select Valid APK")
+                ExceptionHandler.warning("Error", "Select Valid APK")
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in browseDialog", str(e))
+            ExceptionHandler.warning("Error in browseDialog", str(e))
 
     def selectActivity(self,item):
         try:
@@ -404,7 +419,7 @@ class MainWindow(QMainWindow):
             self.loadJavaClassFile(javaClassPath)
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in selectActivity", str(e))
+            ExceptionHandler.warning("Error in selectActivity", str(e))
 
 
     def generateExtrasCode(self):
@@ -430,7 +445,7 @@ class MainWindow(QMainWindow):
                             globalVariables.apkCode += "\nintent.putExtra(\"" + self.ui.extrasTable.item(i,1).text() + "\", "+bundleId+")"
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in generateExtrasCode", str(e))
+            ExceptionHandler.warning("Error in generateExtrasCode", str(e))
 
     def adbLaunchActivity(self):
         try:
@@ -465,10 +480,10 @@ class MainWindow(QMainWindow):
                 if(result.returncode == 1):
                     self.ui.outputText.setText(result.stderr)
             else:
-                QMessageBox.warning(self, "Error", "No Activities Selected")
+                ExceptionHandler.warning("Error", "No Activities Selected")
 
         except Exception as e:
-            QMessageBox.warning(self, "Error in adbLaunchActivity", str(e))
+            ExceptionHandler.warning("Error in adbLaunchActivity", str(e))
 
     def removeExtras(self):
         try:
@@ -480,9 +495,9 @@ class MainWindow(QMainWindow):
                 self.ui.extrasTable.removeRow(selected)
 
         except IndexError:
-            QMessageBox.warning(self, "Error", "Nothing Selected")
+            ExceptionHandler.warning("Error", "Nothing Selected")
         except Exception as e:
-            QMessageBox.warning(self, "Error in removeExtras", str(e))
+            ExceptionHandler.warning("Error in removeExtras", str(e))
 
 
 
