@@ -279,7 +279,7 @@ class MainWindow(QMainWindow):
         self.ui.dataLine.editingFinished.connect(self.getDataValue)
 
         #for daster testing
-        self.loadJavaClassFile("/tmp/ExportHunter_extract/sources/com/ewmglobal/ewmmobile/settings/SettingsActivity.java")
+        # self.loadJavaClassFile("/tmp/ExportHunter_extract/sources/com/ewmglobal/ewmmobile/settings/SettingsActivity.java")
 
         self.ui.javaCode.selectionChanged.connect(self.javaCodeSelected)
 
@@ -430,7 +430,12 @@ class MainWindow(QMainWindow):
                     if(self.ui.extrasTable.item(i,1).text() != ""):
                         # self.ui.apkCodeText.append("intent.putExtra(\""+self.ui.extrasTable.item(i,1).text()+"\", \""+self.ui.extrasTable.item(i,2).text()+"\")")
                         globalVariables.apkCode += "\n"
-                        globalVariables.apkCode += "intent.putExtra(\""+self.ui.extrasTable.item(i,1).text()+"\", \""+self.ui.extrasTable.item(i,2).text()+"\")"
+
+                        type=self.ui.extrasTable.item(i,0).text()
+                        if( type == "--ez" or type == "--ei" or type == "--el" or type == "--ef" or type == "--ed" or type == "--eia" or type == "--eial" or type == "--ela" or type == "--elal" or type == "--efa" or type == "--efal" or type == "--eda" or type == "--edal"):
+                            globalVariables.apkCode += "intent.putExtra(\""+self.ui.extrasTable.item(i,1).text()+"\", "+self.ui.extrasTable.item(i,2).text()+")"
+                        else:
+                            globalVariables.apkCode += "intent.putExtra(\""+self.ui.extrasTable.item(i,1).text()+"\", \""+self.ui.extrasTable.item(i,2).text()+"\")"
                 else:
                     bundleId = self.ui.extrasTable.item(i,0).text()
 
