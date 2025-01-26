@@ -253,6 +253,8 @@ class MainWindow(QMainWindow):
 
         self.ui.scrcpy.clicked.connect(self.launchScrcpy)
 
+        self.ui.jadx.clicked.connect(self.launchJadx)
+
         # Browse
         self.ui.browse.clicked.connect(self.browseDialog)
 
@@ -302,6 +304,15 @@ class MainWindow(QMainWindow):
             subprocess.Popen("scrcpy")
         except Exception as e:
             ExceptionHandler.warning("Error in launchScrcpy", str(e))
+
+    def launchJadx(self):
+        try:
+            if(globalVariables.apkPath):
+                subprocess.Popen(["jadx-gui",globalVariables.apkPath])
+            else:
+                subprocess.Popen("jadx-gui")
+        except Exception as e:
+            ExceptionHandler.warning("Error in launchJadx", str(e))
 
     #get Java Class File Path
     def getJavaClassPath(self, className):

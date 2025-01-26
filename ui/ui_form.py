@@ -159,6 +159,9 @@ class Ui_MainWindow(object):
         self.javaCode.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
         self.javaCode.setReadOnly(True)
         self.javaCode.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.jadx = QPushButton(self.centralwidget)
+        self.jadx.setObjectName(u"jadx")
+        self.jadx.setGeometry(QRect(310, 10, 71, 31))
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -215,5 +218,6 @@ class Ui_MainWindow(object):
 "li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'Menlo'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+        self.jadx.setText(QCoreApplication.translate("MainWindow", u"Jadx-gui", None))
     # retranslateUi
 
