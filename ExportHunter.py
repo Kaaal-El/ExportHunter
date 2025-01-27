@@ -236,7 +236,7 @@ class MainWindow(QMainWindow):
 
             ui.apkLaunch.clicked.connect(apkLaunch)
 
-            ui.refresh.clicked.connect(lambda: (setattr(globalVariables, "apkCode", ""), apkCodeGenerate()))
+            ui.refresh.clicked.connect(lambda: (setattr(globalVariables, "apkCode", ""), self.generateExtrasCode(), apkCodeGenerate()))
 
             window.exec()
 
