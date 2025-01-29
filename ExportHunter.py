@@ -414,11 +414,14 @@ class MainWindow(QMainWindow):
                     self.ui.outputText.setText("Apk Analyzed")
                 except Exception as e:
                     ExceptionHandler.warning("Error in browseDialog", str(e))
+
             else:
                 ExceptionHandler.warning("Error", "Select Valid APK")
+                globalVariables.clean()
 
         except Exception as e:
             ExceptionHandler.warning("Error in browseDialog", str(e))
+
 
     def selectActivity(self,item):
         try:

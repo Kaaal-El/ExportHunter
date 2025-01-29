@@ -3,6 +3,27 @@
 # if __name__ == "__main__":
 #     pass
 
+def clean():
+    numberOfBundles = 0
+    # bundleData = {"bundleName":{"0",{"type":"","key":"","value":""}}}
+    bundleData = {}
+
+    apkPath = ""
+    manifest_path = ""
+
+    tmpDecompiledApkPath = "/tmp/ExportHunter_extract/"
+    tmpCompiledApkPath ="/tmp/ExportHunter_build/"
+
+    javaClassCode = ""
+    selectedActivity = ""
+    action = ""
+    data = ""
+    packageName = ""
+
+    apkCode = ""
+    searchValues=""
+
+
 numberOfBundles = 0
 # bundleData = {"bundleName":{"0",{"type":"","key":"","value":""}}}
 bundleData = {}
