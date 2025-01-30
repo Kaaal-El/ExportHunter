@@ -23,7 +23,7 @@ class JavaHighlighter(QSyntaxHighlighter):
             # String formatting (Strings enclosed in double quotes)
             stringFormat = QTextCharFormat()
             stringFormat.setForeground(QColor("#C71585"))  # Pink for strings
-            self.highlightingRules.append(("\".*\"", stringFormat))  # Strings between double quotes
+            self.highlightingRules.append((r'"([^"\\]|\\.)*"', stringFormat))  # Strings between double quotes
 
             # Single-line comment formatting
             singleLineCommentFormat = QTextCharFormat()
