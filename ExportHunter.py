@@ -175,6 +175,7 @@ class MainWindow(QMainWindow):
             try:
                 ui.outputText.clear()
                 package = globalVariables.packageName
+                QApplication.processEvents()
 
                 if(package):
                     result = subprocess.run(["rm", "-rf", "/tmp/ExportHunter_build"], capture_output=False, text=False)
@@ -182,12 +183,14 @@ class MainWindow(QMainWindow):
                         ui.outputText.append(result.stderr)
                         return
                     ui.outputText.append("[*] /tmp cleared")
+                    QApplication.processEvents()
 
                     result = subprocess.run(["unzip", "-o", "helper/baseAPKCode.zip", "-d", "/tmp/ExportHunter_build"], capture_output=True, text=True)
                     if(result.returncode == 1):
                         ui.outputText.append(result.stderr)
                         return
                     ui.outputText.append("[*] Base APK Code extracted to /tmp")
+                    QApplication.processEvents()
 
                     with open(globalVariables.tmpCompiledApkPath + "baseMainActivityCode.kt","r") as file:
                         mainActivity = file.read()
@@ -200,13 +203,16 @@ class MainWindow(QMainWindow):
                         file.write(mainActivityModified)
                         file.close()
                     ui.outputText.append("[*] Main Activity Modified")
+                    QApplication.processEvents()
 
                     result = subprocess.run([globalVariables.tmpCompiledApkPath + "gradlew", "-p", globalVariables.tmpCompiledApkPath , "assembleDebug"], capture_output=True, text=True)
                     if(result.returncode == 1):
                         ui.outputText.append(result.stderr)
+                    QApplication.processEvents()
 
                     if os.path.exists(globalVariables.tmpCompiledApkPath + "app/build/outputs/apk/debug/app-debug.apk"):
                         ui.outputText.append("[*] APK Creation Succsessfull")
+                        QApplication.processEvents()
                         result = subprocess.run(["adb", "install", globalVariables.tmpCompiledApkPath + "app/build/outputs/apk/debug/app-debug.apk"], capture_output=True, text=True)
                         if(result.returncode == 1):
                             ui.outputText.append(result.stderr)
@@ -217,6 +223,7 @@ class MainWindow(QMainWindow):
                                 ui.outputText.append(result.stderr)
                                 return
                         ui.outputText.append("[*] APK installation completed")
+
 
                     ui.outputText.append("[*] Launch Tasks completed")
             except Exception as e:
