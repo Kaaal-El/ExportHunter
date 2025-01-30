@@ -392,6 +392,15 @@ class MainWindow(QMainWindow):
             #Use this while deployment
             globalVariables.apkPath, _filter = QFileDialog.getOpenFileName(None, "Open APK File", '', "(*.apk)")
             self.ui.listExported.clear()
+            self.ui.outputText.clear()
+            self.ui.outputText.append("[*] File Selected")
+            self.ui.outputText.append("[*] Extracting File")
+            QApplication.processEvents()
+            QApplication.processEvents()
+
+
+
+
             if os.path.exists(globalVariables.apkPath):
                 try:
                 #Apktool _ Old code
@@ -401,6 +410,9 @@ class MainWindow(QMainWindow):
                     command = ["jadx", "-d", globalVariables.tmpDecompiledApkPath , str(globalVariables.apkPath), "-q","--deobf"]
 
                     result = subprocess.run(command, capture_output=False, text=True)
+
+
+                    self.ui.outputText.append("[*] File Extracted")
                     #with APKtool
                     # globalVariables.manifest_path = "/tmp/ExportHunter_extract/AndroidManifest.xml"
 
@@ -418,7 +430,7 @@ class MainWindow(QMainWindow):
                         if(activity.attrib.get("{http://schemas.android.com/apk/res/android}exported")) == "true":
                             self.ui.listExported.addItem(activity.attrib.get("{http://schemas.android.com/apk/res/android}name"))
 
-                    self.ui.outputText.setText("Apk Analyzed")
+                    self.ui.outputText.append("[*] File Analyzed")
                 except Exception as e:
                     ExceptionHandler.warning("Error in browseDialog", str(e))
 
