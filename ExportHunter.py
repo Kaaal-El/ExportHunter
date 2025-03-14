@@ -287,6 +287,8 @@ class MainWindow(QMainWindow):
         #data change
         self.ui.dataLine.editingFinished.connect(self.getDataValue)
 
+        #manuall change of selected activity
+        self.ui.activityText.editingFinished.connect(self.getActivityValue)
         #for daster testing
         # self.loadJavaClassFile("/tmp/ExportHunter_extract/sources/com/ewmglobal/ewmmobile/settings/SettingsActivity.java")
 
@@ -372,6 +374,16 @@ class MainWindow(QMainWindow):
 
         except Exception as e:
             ExceptionHandler.warning("Error in getActionValue", str(e))
+
+    def getActivityValue(self):
+        try:
+            activity = self.ui.activityText.text()
+            globalVariables.selectedActivity = activity
+            return(str(activity))
+
+        except Exception as e:
+            ExceptionHandler.warning("Error in setActivityValue", str(e))
+
 
     #get Data Value
     def getDataValue(self):
