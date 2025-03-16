@@ -22,11 +22,21 @@ This tool is ideal for testing and automating interactions with exported compone
 
 1. **Browse an APK** – Load an APK to retrieve its exported activities.  
 2. **Select an Activity** – Double-click an activity to view its Java code.  
-3. **Modify Intent Data** – Add extras or bundles if necessary.  
+3. **Modify Intent Data** – Add Action (-a), Data (-d), Extras and/or Bundles.  
 4. **Launch via ADB** – Execute the selected activity on a device.  
 5. **Generate & Deploy APK** – Automatically create and launch an APK for testing.  
 
-<img width="1131" alt="1" src="https://github.com/user-attachments/assets/242134c2-5432-4389-942a-204cf63e5a81" />
+
+## Demo
+- Launch Using ADB (Secret 1)
+
+https://github.com/user-attachments/assets/3b09179e-1cb3-48fb-8a5f-425b3253fa12
+
+- Launch Using APK (Secret 2)
+
+https://github.com/user-attachments/assets/8a5110a8-e5f4-43de-9f59-892f13e140ee
+
+
 
 ## Dependencies  
 
