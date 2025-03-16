@@ -1,41 +1,43 @@
-# ExportHunter
-This project allows users to fetch exported activities from an APK and initiate am start commands with provided intent values. Additionally, it can generate code for building an APK that triggers the exported activity with specified intent and bundle values. 
+# ExportHunter  
 
-Ideal for testing and automating interactions with exported components.
+ExportHunter is a tool that extracts exported activities from an APK and allows users to initiate `am start` commands with specified intent values. It also generates code to build an APK that triggers the exported activity with predefined intent and bundle parameters.  
 
-# Working
-1. **Browse an APK** – A list of exported activities will be displayed.  
-2. **Select an Activity** – Double-click on an activity to load its corresponding Java code. Intent-related methods will be highlighted.  
-3. **Add Extras & Bundles** (if needed):  
-   - Use appropriate data types such as `--es`, `--ez`, `--ei`, etc.  
-   - Click the **Configure** button in the bundle entry to add extras within the bundle.  
-4. **Launch via ADB** – Execute the selected activity on a connected device.  
-5. **Generate & Launch APK Code** (for working with bundles):  
-   - The tool will generate the required APK code.  
-   - The APK will automatically initiate the call to the exported activity upon launch.  
-6. **Demo APK Included** – A sample `Demo.apk` is provided to help users familiarize themselves with the tool.  
+This tool is ideal for testing and automating interactions with exported components.  
 
+## Features  
+
+1. **Extract Exported Activities** – Detects and lists all exported activities, including those requiring **permissions**.  
+2. **Java Code Analysis** – Highlights intent-related methods in the selected activity’s Java code, identifying potential extra values.  
+3. **Modify Intent Extras & Bundles** –  
+   - Supports data types such as `--es`, `--ez`, `--ei`, etc.  
+   - Use the **Configure** button to add extra values inside a bundle.  
+4. **Launch via ADB** – Execute the selected activity directly on a connected device.  
+5. **Generate & Launch APK Code** –  
+   - Generates APK code for launching the exported activity.  
+   - Automatically initiates the call to the exported activity upon launch.  
+6. **No Root Required** – Works seamlessly on non-rooted Android devices.  
+7. **Demo APK Included** – A sample `Demo.apk` is provided for user familiarization.  
+
+## Usage  
+
+1. **Browse an APK** – Load an APK to retrieve its exported activities.  
+2. **Select an Activity** – Double-click an activity to view its Java code.  
+3. **Modify Intent Data** – Add extras or bundles if necessary.  
+4. **Launch via ADB** – Execute the selected activity on a device.  
+5. **Generate & Deploy APK** – Automatically create and launch an APK for testing.  
 
 <img width="1131" alt="1" src="https://github.com/user-attachments/assets/242134c2-5432-4389-942a-204cf63e5a81" />
 
-# Things to Know
-- Extract exported Activities includes activities that requires **permission**
-- Java Code of selected Activity will Highlighted code that might be using Extras from intent
-- Generated APK calls Exported activity at start of its MainActivity
+## Dependencies  
 
+Ensure the following tools are installed and available in your system `PATH`:  
 
-# Dependencies
+- **ADB**
+- **scrcpy**  
+- **apktool**  
+- **Java** – `openJDK@21` or later  
+- **Android SDK 34** or later (Recommended: Android Studio installed)  
 
-To have the tool working please install the following tools.
-- scrcpy
-- apktool
-- Java -> openJdk@21 or later
-- Android SDK 34 or later (Preferably have Android Studio installed) 
+### Compatibility  
 
-
-All the tools should be in PATH
-
-Compatible with OS having /tmp folder.
-
-
-
+- Requires an OS with a `/tmp` folder.  
