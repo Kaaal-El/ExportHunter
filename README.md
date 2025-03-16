@@ -4,6 +4,11 @@ ExportHunter is a tool that extracts exported activities from an APK and allows 
 
 This tool is ideal for testing and automating interactions with exported components.  
 
+## Run
+```
+python3 ExportHunter.py
+```
+
 ## Features  
 
 1. **Extract Exported Activities** – Detects and lists all exported activities, including those requiring **permissions**.  
