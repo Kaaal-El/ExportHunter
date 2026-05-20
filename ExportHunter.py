@@ -20,7 +20,7 @@ from ui.ui_apkCreate import Ui_apkCreate
 import subprocess,os, xml.etree.ElementTree as ET
 from PySide6.QtWidgets import (QFileDialog, QDialog, QTableWidgetItem)
 
-import re
+import re, os
 
 
 class MainWindow(QMainWindow):
@@ -334,6 +334,9 @@ class MainWindow(QMainWindow):
     #load the given java class file
     def loadJavaClassFile(self,classPath):
         try:
+            if os.path.isfile(classPath) == False:
+                command = ["jadx", "-d", globalVariables.tmpDecompiledApkPath , "--single-class" , globalVariables.selectedActivity, str(globalVariables.apkPath), "-q"]
+                result = subprocess.run(command, capture_output=False, text=True)
             with open(classPath,"r") as file:
                 content = file.read()
 
@@ -419,7 +422,7 @@ class MainWindow(QMainWindow):
                 # command = ["apktool", "d", "-f", apkPath, "-o", globalVariables.tmpDecompiledApkPath ]
 
                 #use Jadx for getting java code also
-                    command = ["jadx", "-d", globalVariables.tmpDecompiledApkPath , str(globalVariables.apkPath), "-q","--deobf"]
+                    command = ["jadx", "--no-src" ,"-d", globalVariables.tmpDecompiledApkPath , str(globalVariables.apkPath), "-q"]
 
                     result = subprocess.run(command, capture_output=False, text=True)
 
@@ -459,6 +462,14 @@ class MainWindow(QMainWindow):
             self.ui.activityText.setText(item.text())
             globalVariables.selectedActivity = str(item.text())
             self.ui.outputText.setText("Activity Selected")
+            javaClassPath = self.getJavaClassPath(globalVariables.selectedActivity)
+
+            #NEW CODE
+            # command = ["jadx", "-d", globalVariables.tmpDecompiledApkPath , "--single-class" , globalVariables.selectedActivity, str(globalVariables.apkPath), "-q"]
+            # result = subprocess.run(command, capture_output=False, text=True)
+            #EOF NEWCODE
+
+
 
             javaClassPath = self.getJavaClassPath(globalVariables.selectedActivity)
             self.loadJavaClassFile(javaClassPath)
